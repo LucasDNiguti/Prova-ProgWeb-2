@@ -21,8 +21,7 @@ function filterCount(params) {
         if (key === 'page' || key === 'busca') count--;
     }
 
-    const filterC = document.querySelector('#filter-count');
-    filterC.textContent = count;
+    document.querySelector('#filter-count').textContent = count;
 }
 
 function openFilter() {
