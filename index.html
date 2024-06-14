@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBGE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Portal de Notícias do IBGE</h1>
+
+        <div id="form">
+            <form id="search-form" onsubmit="formSubmit(event)">
+                  <input id="search" type="text" placeholder="Buscar">
+                  <button id="search-button" type="submit">🔍</button>
+            </form>
+        </div>
+
+        <span id="filter-img" type="button" onclick="openFilter()">
+            <svg
+            width="20"
+            height="20"
+            fill="#f0f0f0"
+            viewBox="0 0 80 90"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="m 0,0 30,45 0,30 10,15 0,-45 30,-45 Z"></path>
+          </svg>
+        <div id="filter-count">1</div>  
+        </span>
+    </header>
+    <main>
+        <dialog id="modal">
+
+            <div id="exit">
+                <button id="exit-modal" onclick="closeFilter()">❌</button>
+            </div>
+
+            <form onsubmit="applyFilters(event)">
+
+                <div>
+                    <label for="tipo">Tipo:</label>
+                    <select name="tipo" id="tipo">
+                        <option value="" selected>Selecione um tipo</option>
+                        <option value="midia">Mídia</option>
+                        <option value="noticia">Notícia</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="quantidade">Quantidade:</label>
+                <select name="quantidade" id="quantidade">
+                    <option value="10" selected>10</option>
+                </select>
+                </div>
+
+                <div>
+                    <label for="de">De:</label>
+                    <input type="date" name="de" id="de">
+                </div>
+
+                <div>
+                    <label for="ate">Até:</label>
+                    <input type="date" name="ate" id="ate">
+                </div>
+                <button id="filter-button" type="submit">Filtrar</button>
+            </form>
+        </dialog>
+        <ul id="content">
+        </ul>
+        <ul id="pagination">
+        </ul>
+    </main>
+    <footer>
+        <p>© Página do IBGE</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
