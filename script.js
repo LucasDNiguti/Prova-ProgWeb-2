@@ -1,16 +1,16 @@
-const ibgeUrl = `http://servicodados.ibge.gov.br/api/v3/noticias`;
+const ibgeUrl = `https://servicodados.ibge.gov.br/api/v3/noticias/`;
 
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(location.search);
-    queryString(params);
+    setDefaultQueryString(params);
     filterCount(params);
-    News();
+    queryNews();
 });
 
-function queryString(params) {
+function setDefaultQueryString(params) {
     if (!params.has('quantidade')) params.set('quantidade', 10);
     if (!params.has('page')) params.set('page', 1);
-
+    
     history.replaceState({}, "", `${location.pathname}?${params}`);
 }
 
@@ -18,7 +18,7 @@ function filterCount(params) {
     let count = params.size;
 
     for (const key of params.keys()) {
-        if (key == 'page' || key == 'busca') count--;
+        if (key === 'page' || key === 'busca') count--;
     }
 
     const filterC = document.querySelector('#filter-count');
@@ -33,23 +33,22 @@ function closeFilter() {
     document.querySelector('#modal').style.display = 'none';
 }
 
-function qtdPage(count, params) {
+function setQtdPicklist(count, params) {
     const qtdPage = document.querySelector('#quantidade');
     let qtd = params.get('quantidade');
-    if (qtd > count || qtd == null)
-        qtd = 10;
+    if (qtd > count || qtd == null) qtd = 10;
 
     qtdPage.innerHTML = `<option value="10" selected>10</option>`;
 
-    for (let x = 15; x < count; x += 10) {
+    for (let x = 15; x <= count; x += 5) {
         const opt = new Option(x, x);
         qtdPage.appendChild(opt);
     }
     document.querySelector(`option[value="${qtd}"]`).setAttribute('selected', 'selected');
 }
 
-function formatEditorias(e) {
-    return e.split(";").map(e => `#${e}`).join(" ");
+function formatEditorias(editorias) {
+    return editorias.split(";").map(e => `#${e}`).join(" ");
 }
 
 function formatImage(image) {
@@ -86,16 +85,15 @@ function formSubmit(e) {
     const searchValue = input.value.trim();
     if (!searchValue) return;
 
-    const searchParams = new URLSearchParams();
-    searchParams.set('busca', searchValue);
+    const params = new URLSearchParams(location.search);
+    params.set('busca', searchValue);
 
-    const newUrl = `${location.pathname}?${searchParams.toString()}`;
-    history.replaceState({}, "", newUrl);
+    history.replaceState({}, "", `${location.pathname}?${params}`);
 
-    News();
+    queryNews();
 }
 
-async function News() {
+async function queryNews() {
     const params = new URLSearchParams(location.search);
     const urlParams = `${ibgeUrl}?${params}`;
 
@@ -103,7 +101,7 @@ async function News() {
         const response = await fetch(urlParams);
         const content = await response.json();
 
-        qtdPage(content.count, params);
+        setQtdPicklist(content.count, params);
         fillContent(content);
         setPaginationButtons(content);
         paginationStyle(params.get('page'));
@@ -133,7 +131,7 @@ function applyFilters(e) {
     history.replaceState({}, "", `${location.pathname}?${params}`);
     filterCount(params);
     closeFilter();
-    News();
+    queryNews();
 }
 
 function fillContent(content) {
@@ -216,7 +214,7 @@ function setPage(e) {
     params.set('page', value);
 
     history.replaceState({}, "", `${location.pathname}?${params}`);
-    News();
+    queryNews();
 }
 
 function paginationStyle(pageNumber) {
